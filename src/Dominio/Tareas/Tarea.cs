@@ -29,5 +29,10 @@ namespace Dominio.Tareas
             Descripcion = descripcion ?? throw new ArgumentNullException(nameof(descripcion));
             Estado = estado ?? throw new ArgumentNullException(nameof(estado));
         }
+
+        public void ActualizarEstado(string estado)
+        {
+            Estado = estado ?? throw new ArgumentNullException(nameof(estado));
+        }
     }
 }

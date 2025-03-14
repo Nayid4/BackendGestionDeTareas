@@ -1,4 +1,5 @@
 ﻿using Aplicacion.ListaDeTareas.Actualizar;
+using Aplicacion.ListaDeTareas.ActualizarEstadoDeTarea;
 using Aplicacion.ListaDeTareas.ActualizarTarea;
 using Aplicacion.ListaDeTareas.AgregarTarea;
 using Aplicacion.ListaDeTareas.Crear;
@@ -100,7 +101,7 @@ namespace GestionDeTareas.API.Controllers
         [HttpPost("eliminar-tarea/{id}")]
         public async Task<IActionResult> EliminarTarea(Guid id, [FromBody] EliminarTareaDeListaDeTareasCommand comando)
         {
-            if (comando.Id != id)
+            if (comando.IdListaDeTarea != id)
             {
                 List<Error> errores = new()
                 {
@@ -134,6 +135,27 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActulizarTarea = await _mediator.Send(comando);
 
             return resultadoDeActulizarTarea.Match(
+                pqrdId => NoContent(),
+                errores => Problem(errores)
+            );
+        }
+
+        [HttpPost("actulizar-estado-de-tarea/{id}")]
+        public async Task<IActionResult> ActualizarEstadoDeTarea(Guid id, [FromBody] ActualizarEstadoDeTareaDeListaDeTareasCommand comando)
+        {
+            if (comando.IdListaDeTareas != id)
+            {
+                List<Error> errores = new()
+                {
+                    Error.Validation("ListaDeTarea.ActualizacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
+                };
+
+                return Problem(errores);
+            }
+
+            var resultadoDeActulizarEstadoDeTarea = await _mediator.Send(comando);
+
+            return resultadoDeActulizarEstadoDeTarea.Match(
                 pqrdId => NoContent(),
                 errores => Problem(errores)
             );

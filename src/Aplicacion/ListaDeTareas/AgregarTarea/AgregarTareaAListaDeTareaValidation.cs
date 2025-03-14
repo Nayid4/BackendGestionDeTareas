@@ -14,13 +14,14 @@ namespace Aplicacion.ListaDeTareas.AgregarTarea
 
 
             RuleFor(r => r.Tarea.Descripcion)
-                .NotEmpty().WithMessage("La descripción no puede estar vacía.");
+                .NotEmpty().WithMessage("La descripción no puede estar vacía.")
+                .MaximumLength(500).WithMessage("El título no puede tener más de 500 caracteres.");
 
             RuleFor(r => r.Tarea.Estado)
                 .NotEmpty().WithMessage("El estado no puede estar vacío.")
                 .MaximumLength(25).WithMessage("El estado no puede tener más de 25 caracteres.")
-                .Must(estado => new[] { "Pendiente", "Completada", "En proceso" }.Contains(estado))
-                .WithMessage("El estado debe ser 'Pendiente', 'Completada' o 'En proceso'.");
+                .Must(estado => new[] { "Pendiente", "Completada" }.Contains(estado))
+                .WithMessage("El estado debe ser 'Pendiente' o 'Completada'.");
 
         }
     }

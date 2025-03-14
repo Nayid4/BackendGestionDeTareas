@@ -19,7 +19,13 @@ namespace Infrastructure.Servicios
         public static IServiceCollection AgregarPersistencias(this IServiceCollection servicios, IConfiguration configuracion)
         {
             servicios.AddDbContext<AplicacionContextoDb>(options =>
-                options.UseSqlServer(configuracion.GetConnectionString("Database")));
+                options.UseSqlServer(configuracion.GetConnectionString("Database"), sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null);
+                }));
 
             servicios.AddScoped<IAplicacionContextoDb>(sp =>
                 sp.GetRequiredService<AplicacionContextoDb>());

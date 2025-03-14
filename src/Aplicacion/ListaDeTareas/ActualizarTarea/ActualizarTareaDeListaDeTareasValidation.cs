@@ -16,7 +16,8 @@ namespace Aplicacion.ListaDeTareas.ActualizarTarea
                 .MaximumLength(50).WithMessage("El título no puede tener más de 50 caracteres.");
 
             RuleFor(r => r.Tarea.Descripcion)
-                .NotEmpty().WithMessage("La descripción no puede estar vacía.");
+                .NotEmpty().WithMessage("La descripción no puede estar vacía.")
+                .MaximumLength(500).WithMessage("El título no puede tener más de 500 caracteres.");
 
             RuleFor(r => r.Tarea.Estado)
                 .NotEmpty().WithMessage("El estado no puede estar vacío.")
