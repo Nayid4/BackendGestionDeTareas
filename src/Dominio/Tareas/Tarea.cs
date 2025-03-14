@@ -9,25 +9,25 @@ namespace Dominio.Tareas
         public IdListaDeTareas IdListaDetareas { get; private set; } = default!;
         public string Titulo { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
-        public bool Estado { get; private set; } = false;
+        public string Estado { get; private set; } = string.Empty;
 
         public Tarea() { }
 
-        public Tarea(IdTarea id, IdListaDeTareas idListaDetareas, string titulo, string descripcion, bool estado)
+        public Tarea(IdTarea id, IdListaDeTareas idListaDetareas, string titulo, string descripcion, string estado)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             IdListaDetareas = idListaDetareas ?? throw new ArgumentNullException(nameof(Id));
             Titulo = titulo ?? throw new ArgumentNullException(nameof(titulo));
             Descripcion = descripcion ?? throw new ArgumentNullException(nameof(descripcion));
-            Estado = estado;
+            Estado = estado ?? throw new ArgumentNullException(nameof(estado));
         }
 
-        public void Actualizar(IdListaDeTareas idListaDetareas, string titulo, string descripcion, bool estado)
+        public void Actualizar(IdListaDeTareas idListaDetareas, string titulo, string descripcion, string estado)
         {
             IdListaDetareas = idListaDetareas ?? throw new ArgumentNullException(nameof(Id));
             Titulo = titulo ?? throw new ArgumentNullException(nameof(titulo));
             Descripcion = descripcion ?? throw new ArgumentNullException(nameof(descripcion));
-            Estado = estado;
+            Estado = estado ?? throw new ArgumentNullException(nameof(estado));
         }
     }
 }

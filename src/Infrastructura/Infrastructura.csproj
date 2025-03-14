@@ -21,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistencia\Configuraciones\" />
     <Folder Include="Persistencia\Migraciones\" />
-    <Folder Include="Persistencia\Repositorios\" />
   </ItemGroup>
 
 </Project>

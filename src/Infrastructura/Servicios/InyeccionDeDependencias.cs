@@ -1,6 +1,8 @@
 ﻿using Aplicacion.Datos;
+using Dominio.ListasDeTareas;
 using Dominio.Primitivos;
 using Infraestructure.Persistencia;
+using Infrastructura.Persistencia.Repositorios;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +27,7 @@ namespace Infrastructure.Servicios
             servicios.AddScoped<IUnitOfWork>(sp =>
                 sp.GetRequiredService<AplicacionContextoDb>());
 
-
+            servicios.AddScoped<IRepositorioListaDeTareas, RepositorioListaDeTareas>();
 
             return servicios;
         }
