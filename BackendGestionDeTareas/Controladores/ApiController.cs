@@ -5,8 +5,8 @@ using GestionDeTareas.API.Comun.Http;
 namespace GestionDeTareas.API.Controllers
 {
     [ApiController]
-    [EnableCors("webRemotaSac")]
-    //[EnableCors("webLocalSac")]
+    [EnableCors("webRemota")]
+    //[EnableCors("webLocal")]
     public class ApiController :ControllerBase
     {
         protected IActionResult Problem(List<Error> errors)
