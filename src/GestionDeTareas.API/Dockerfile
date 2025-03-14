@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["BackendGestionDeTareas/BackendGestionDeTareas.csproj", "BackendGestionDeTareas/"]
-RUN dotnet restore "./BackendGestionDeTareas/BackendGestionDeTareas.csproj"
+COPY ["src/BackendGestion.API/GestionDeTareas.API.csproj", "src/GestionDeTareas.API/"]
+RUN dotnet restore "./src/GestionDeTareas.API/GestionDeTareas.API.csproj"
 COPY . .
 WORKDIR "/src/BackendGestionDeTareas"
-RUN dotnet build "./BackendGestionDeTareas.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./BackendGestionDeTareas.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BackendGestionDeTareas.dll"]
+ENTRYPOINT ["dotnet", "GestionDeTareas.API.dll"]
