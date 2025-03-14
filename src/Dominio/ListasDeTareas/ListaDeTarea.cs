@@ -38,7 +38,7 @@ namespace Dominio.ListasDeTareas
 
         public Tarea? BuscarTarea(IdTarea id)
         {
-            return _tareas.FirstOrDefault(t => t.Equals(id));
+            return _tareas.FirstOrDefault(t => t.Id.Equals(id));
         }
 
     }
