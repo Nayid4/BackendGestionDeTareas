@@ -5,7 +5,7 @@ namespace Aplicacion.ListaDeTareas.EliminarTarea
     {
         public EliminarTareaDeListaDeTareasValidation()
         {
-            RuleFor(r => r.IdListaDeTarea)
+            RuleFor(r => r.IdListaDeTareas)
                 .NotEmpty().WithMessage("El Id de la lista de tareas no puede estar vacío.");
 
             RuleFor(r => r.IdTarea)
