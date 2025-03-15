@@ -10,8 +10,8 @@ namespace Aplicacion.ListaDeTareas.Actualizar
 
         public ActualizarListaDeTareasCommandHandler(IRepositorioListaDeTareas repositorioListaDeTareas, IUnitOfWork unitOfWork)
         {
-            _repositorioListaDeTareas = repositorioListaDeTareas;
-            _unitOfWork = unitOfWork;
+            _repositorioListaDeTareas = repositorioListaDeTareas ?? throw new ArgumentNullException(nameof(repositorioListaDeTareas));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<ErrorOr<Unit>> Handle(ActualizarListaDeTareasCommand comando, CancellationToken cancellationToken)

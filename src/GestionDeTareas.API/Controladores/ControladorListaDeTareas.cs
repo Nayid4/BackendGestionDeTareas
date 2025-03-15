@@ -5,6 +5,7 @@ using Aplicacion.ListaDeTareas.AgregarTarea;
 using Aplicacion.ListaDeTareas.Crear;
 using Aplicacion.ListaDeTareas.Eliminar;
 using Aplicacion.ListaDeTareas.EliminarTarea;
+using Aplicacion.ListaDeTareas.FiltrarTareasPorEstado;
 using Aplicacion.ListaDeTareas.ListarTodos;
 using Microsoft.AspNetCore.Authorization;
 
@@ -27,7 +28,7 @@ namespace GestionDeTareas.API.Controllers
             var resultadosDeListarTodos = await _mediator.Send(new ListarTodasLasListasDeTareasQuery());
 
             return resultadosDeListarTodos.Match(
-                usuarios => Ok(usuarios),
+                resp => Ok(resp),
                 errores => Problem(errores)
             );
         }
@@ -40,7 +41,7 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeCrear = await _mediator.Send(comando);
 
             return resultadoDeCrear.Match(
-                usuarioId => Ok(usuarioId),
+                resp => Ok(resp),
                 errores => Problem(errores)
             );
         }
@@ -51,7 +52,7 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeEliminar = await _mediator.Send(new EliminarListaDeTareasCommand(id));
 
             return resultadoDeEliminar.Match(
-                usuarioId => NoContent(),
+                resp => NoContent(),
                 errores => Problem(errores)
             );
         }
@@ -72,7 +73,28 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActualizarListaTarea = await _mediator.Send(comando);
 
             return resultadoDeActualizarListaTarea.Match(
-                pqrdId => NoContent(),
+                resp => NoContent(),
+                errores => Problem(errores)
+            );
+        }
+
+        [HttpPost("filtrar-por-estado/{id}")]
+        public async Task<IActionResult> FiltrarPorEstado(Guid id, [FromBody] FiltrarTareasPorEstadoDeListaDeTareasQuery comando)
+        {
+            if (comando.IdListaDeTareas != id)
+            {
+                List<Error> errores = new()
+                {
+                    Error.Validation("ListaDeTarea.AgregacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
+                };
+
+                return Problem(errores);
+            }
+
+            var resultadoDeFiltrarPorEstado = await _mediator.Send(comando);
+
+            return resultadoDeFiltrarPorEstado.Match(
+                resp => Ok(resp),
                 errores => Problem(errores)
             );
         }
@@ -93,7 +115,7 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeAgregarTarea = await _mediator.Send(comando);
 
             return resultadoDeAgregarTarea.Match(
-                pqrdId => NoContent(),
+                resp => NoContent(),
                 errores => Problem(errores)
             );
         }
@@ -114,12 +136,12 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeEliminarTarea = await _mediator.Send(comando);
 
             return resultadoDeEliminarTarea.Match(
-                pqrdId => NoContent(),
+                resp => NoContent(),
                 errores => Problem(errores)
             );
         }
 
-        [HttpPost("actulizar-tarea/{id}")]
+        [HttpPost("actualizar-tarea/{id}")]
         public async Task<IActionResult> ActualizarTarea(Guid id, [FromBody] ActualizarTareaDeListaDeTareasCommand comando)
         {
             if (comando.IdListaDeTareas != id)
@@ -135,12 +157,12 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActulizarTarea = await _mediator.Send(comando);
 
             return resultadoDeActulizarTarea.Match(
-                pqrdId => NoContent(),
+                resp => NoContent(),
                 errores => Problem(errores)
             );
         }
 
-        [HttpPost("actulizar-estado-de-tarea/{id}")]
+        [HttpPost("actualizar-estado-de-tarea/{id}")]
         public async Task<IActionResult> ActualizarEstadoDeTarea(Guid id, [FromBody] ActualizarEstadoDeTareaDeListaDeTareasCommand comando)
         {
             if (comando.IdListaDeTareas != id)
@@ -156,7 +178,7 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActulizarEstadoDeTarea = await _mediator.Send(comando);
 
             return resultadoDeActulizarEstadoDeTarea.Match(
-                pqrdId => NoContent(),
+                resp => NoContent(),
                 errores => Problem(errores)
             );
         }

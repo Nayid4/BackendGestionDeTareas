@@ -12,8 +12,8 @@ namespace Aplicacion.ListaDeTareas.Crear
 
         public CrearListaDeTareasCommandHandler(IRepositorioListaDeTareas repositorioListaDeTareas, IUnitOfWork unitOfWork)
         {
-            _repositorioListaDeTareas = repositorioListaDeTareas;
-            _unitOfWork = unitOfWork;
+            _repositorioListaDeTareas = repositorioListaDeTareas ?? throw new ArgumentNullException(nameof(repositorioListaDeTareas));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<ErrorOr<Unit>> Handle(CrearListaDeTareasCommand comando, CancellationToken cancellationToken)

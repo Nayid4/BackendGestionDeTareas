@@ -41,5 +41,16 @@ namespace Dominio.ListasDeTareas
             return _tareas.FirstOrDefault(t => t.Id.Equals(id));
         }
 
+        public List<Tarea> FiltrarPorEstado(string estado)
+        {
+            return _tareas.Where(r => r.Estado.Equals(estado)).ToList();
+        }
+
+        public List<Tarea> ListarTodasLasTareas()
+        {
+            return _tareas.ToList();
+        }
+
+
     }
 }
