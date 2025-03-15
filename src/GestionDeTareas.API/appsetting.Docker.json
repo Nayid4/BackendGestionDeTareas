@@ -1,0 +1,12 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "Database": "server=localhost,2501;database=gestionTareasDB;user id=sa;password=YourStrongPwd1;trust server certificate=true"
+  }
+}

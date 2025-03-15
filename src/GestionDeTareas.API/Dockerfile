@@ -1,29 +1,34 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+# Etapa base: Runtime para producción y desarrollo
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
+# Etapa de construcción
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/BackendGestion.API/GestionDeTareas.API.csproj", "src/GestionDeTareas.API/"]
-RUN dotnet restore "./src/GestionDeTareas.API/GestionDeTareas.API.csproj"
-COPY . .
-WORKDIR "/src/BackendGestionDeTareas"
-RUN dotnet build "./GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# Copiar y restaurar dependencias (todas las bibliotecas)
+COPY ["src/GestionDeTareas.API/GestionDeTareas.API.csproj", "GestionDeTareas.API/"]
+COPY ["src/Aplicacion/Aplicacion.csproj", "Aplicacion/"]
+COPY ["src/Infrastructura/Infrastructura.csproj", "Infrastructura/"]
+COPY ["src/Dominio/Dominio.csproj", "Dominio/"]
+
+RUN dotnet restore "GestionDeTareas.API/GestionDeTareas.API.csproj"
+
+
+# Copiar el resto del código fuente y compilar
+COPY ./src .
+WORKDIR "/src/GestionDeTareas.API"
+RUN dotnet build "GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Etapa de publicación
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Etapa final: ejecutando la aplicación
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

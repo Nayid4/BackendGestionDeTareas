@@ -1,6 +1,8 @@
 ﻿
 using Aplicacion.Datos;
+using Dominio.ListasDeTareas;
 using Dominio.Primitivos;
+using Dominio.Tareas;
 
 namespace Infraestructure.Persistencia
 {
@@ -8,6 +10,9 @@ namespace Infraestructure.Persistencia
     {
 
         private readonly IPublisher _publisher;
+
+        public DbSet<ListaDeTarea> ListaDeTareas { get; set; }
+        public DbSet<Tarea> Tareas { get; set; }
 
         public AplicacionContextoDb(DbContextOptions options, IPublisher publisher) : base(options)
         {

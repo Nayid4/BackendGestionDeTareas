@@ -1,17 +1,9 @@
-﻿using ErrorOr;
-using FluentValidation;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Aplicacion.comun.Behaviors
 {
     public class ValidacionBehavior<TRequest, TResponse>
         : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TRequest>
+        where TRequest : IRequest<TResponse>
         where TResponse : IErrorOr
     {
         private readonly IValidator<TRequest>? _validator;
