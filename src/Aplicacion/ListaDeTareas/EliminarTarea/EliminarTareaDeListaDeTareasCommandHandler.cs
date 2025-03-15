@@ -17,7 +17,7 @@ namespace Aplicacion.ListaDeTareas.EliminarTarea
 
         public async Task<ErrorOr<Unit>> Handle(EliminarTareaDeListaDeTareasCommand comando, CancellationToken cancellationToken)
         {
-            if (await _repositorioListaDeTareas.ListarPorId(new IdListaDeTareas(comando.IdListaDeTarea)) is not ListaDeTarea lista)
+            if (await _repositorioListaDeTareas.ListarPorId(new IdListaDeTareas(comando.IdListaDeTareas)) is not ListaDeTarea lista)
             {
                 return Error.NotFound("Lista.NoEncontrada", "No se encontro la lista de tareas.");
             }
