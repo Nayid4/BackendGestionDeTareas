@@ -25,13 +25,7 @@ app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 
 
-//app.UseCors("webLocal");
-
-app.UseCors("webRemota");
-
-app.UseAuthentication();
-
-app.UseAuthorization();
+app.UseCors("web");
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 

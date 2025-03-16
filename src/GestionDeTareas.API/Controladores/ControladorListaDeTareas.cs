@@ -123,7 +123,7 @@ namespace GestionDeTareas.API.Controllers
         [HttpPost("eliminar-tarea/{id}")]
         public async Task<IActionResult> EliminarTarea(Guid id, [FromBody] EliminarTareaDeListaDeTareasCommand comando)
         {
-            if (comando.IdListaDeTarea != id)
+            if (comando.IdListaDeTareas != id)
             {
                 List<Error> errores = new()
                 {

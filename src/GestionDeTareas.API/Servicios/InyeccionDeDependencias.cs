@@ -17,28 +17,17 @@ namespace GestionDeTareas.API.Servicios
 
             servicios.AddCors(options =>
             {
-                /*options.AddPolicy("webLocalSac", policyBuilder =>
+                options.AddPolicy("web", policyBuilder =>
                 {
-                    policyBuilder.WithOrigins("http://localhost:4200");
+                    policyBuilder.WithOrigins(
+                        "http://localhost:4200",
+                        "https://gestion-de-tareas-liard.vercel.app",
+                        "https://nayid4.github.io/FrontendGestionDeTareas"
+                        );
                     policyBuilder.AllowAnyHeader();
                     policyBuilder.AllowAnyMethod();
-                    policyBuilder.AllowCredentials();
-                });*/
-
-                /*options.AddPolicy("webLocalSac", policyBuilder =>
-                {
-                    policyBuilder.AllowAnyHeader();
-                    policyBuilder.AllowAnyMethod();
-                    policyBuilder.AllowCredentials();
-                });*/
-
-                options.AddPolicy("webRemota", policyBuilder =>
-                {
-                    policyBuilder.WithOrigins("https://gestion-de-tareas-liard.vercel.app/")
-                                 .AllowAnyHeader()
-                                 .AllowAnyMethod()
-                                 .AllowCredentials();
                 });
+
             });
 
             return servicios;
