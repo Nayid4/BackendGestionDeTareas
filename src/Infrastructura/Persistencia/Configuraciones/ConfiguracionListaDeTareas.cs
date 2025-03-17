@@ -20,6 +20,8 @@ namespace Infraestructure.Persistencia.Configuraciones
             builder.HasMany(t => t.Tareas)
                 .WithOne()
                 .HasForeignKey(ta => ta.IdListaDetareas);
+
+            builder.Property(t => t.FechaDeCreacion);
         }
     }
 }

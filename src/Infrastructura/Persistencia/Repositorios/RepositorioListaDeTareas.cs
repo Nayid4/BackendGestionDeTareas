@@ -22,6 +22,6 @@ namespace Infrastructura.Persistencia.Repositorios
 
         public async Task<ListaDeTarea?> ListarPorId(IdListaDeTareas id) => await _dbSet.Include(t => t.Tareas).FirstOrDefaultAsync(i => i.Id.Equals(id));
 
-        public Task<List<ListaDeTarea>> ListarTodos() => _dbSet.Include(t => t.Tareas).ToListAsync();
+        public Task<List<ListaDeTarea>> ListarTodos() => _dbSet.OrderBy(t => t.FechaDeCreacion).Include(t => t.Tareas).ToListAsync();
     }
 }
