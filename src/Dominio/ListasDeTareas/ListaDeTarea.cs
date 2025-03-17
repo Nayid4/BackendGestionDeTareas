@@ -10,6 +10,7 @@ namespace Dominio.ListasDeTareas
 
         private readonly HashSet<Tarea> _tareas = new HashSet<Tarea>();
         public ICollection<Tarea> Tareas => _tareas;
+        public DateTime? FechaDeCreacion { get; private set; }
 
         public ListaDeTarea()
         {
@@ -19,6 +20,7 @@ namespace Dominio.ListasDeTareas
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Titulo = titulo ?? throw new ArgumentNullException(nameof(titulo));
+            FechaDeCreacion = DateTime.Now;
         }
 
         public void Actualizar(string titulo)
