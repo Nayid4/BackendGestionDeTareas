@@ -27,7 +27,7 @@ El backend sigue una arquitectura **Cliente-Servidor**, implementando una estruc
 
 ### 1. **GestionDeTareas.API** (Capa de Presentación)
    - Contiene los **controladores** que exponen los endpoints RESTful.
-   - Configura **middlewares**, **extensiones**, y **variables de entorno**.
+   - Configura **middlewares**, **extensiones**, **CORS** y **variables de entorno**.
    - Contiene los archivos **Program.cs**, **appsettings.json**, y **Dockerfiles**.
 
 ### 2. **Aplicacion** (Capa de Aplicación)
@@ -80,7 +80,7 @@ El backend sigue una arquitectura **Cliente-Servidor**, implementando una estruc
    ```sh
    dotnet run
    ```
-5. La API estará disponible con ejecuto en http en: `http://localhost:5243`, con htttps en: `https://localhost:5243` o `https://localhost:7147`, y en IIS Express en: `https://localhost:44358`,
+5. La API estará disponible con ejecuto en http en: `http://localhost:5243`, con https en: `https://localhost:5243` o `https://localhost:7147`, y en IIS Express en: `https://localhost:44358`,
 6. La API estará disponible con docker en: `http://localhost:8080`
 7. La API desplegada estará disponible en: `https://gestion-de-tareas.azurewebsites.net`
 
