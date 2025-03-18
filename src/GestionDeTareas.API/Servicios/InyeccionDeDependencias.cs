@@ -22,7 +22,6 @@ namespace GestionDeTareas.API.Servicios
                 {
                     policyBuilder.WithOrigins(
                         "http://localhost:4200",
-                        "https://gestion-de-tareas-liard.vercel.app",
                         "https://nayid4.github.io/FrontendGestionDeTareas",
                         "https://nayid4.github.io"
                         );
@@ -33,12 +32,7 @@ namespace GestionDeTareas.API.Servicios
 
                 options.AddPolicy("web", policyBuilder =>
                 {
-                    policyBuilder.WithOrigins(
-                        "http://localhost:4200",
-                        "https://gestion-de-tareas-liard.vercel.app",
-                        "https://nayid4.github.io/FrontendGestionDeTareas",
-                        "https://nayid4.github.io"
-                        );
+                    policyBuilder.AllowAnyOrigin();
                     policyBuilder.AllowAnyHeader();
                     policyBuilder.AllowAnyMethod();
                 });
