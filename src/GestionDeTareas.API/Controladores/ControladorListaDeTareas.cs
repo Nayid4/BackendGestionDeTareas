@@ -13,23 +13,31 @@ namespace GestionDeTareas.API.Controllers
 
 {
     [Route("lista-de-tareas")]
+    [AllowAnonymous]
     public class ControladorListaDeTareas : ApiController
     {
         private readonly ISender _mediator;
+        private readonly ILogger<ControladorListaDeTareas> _logger;
 
-        public ControladorListaDeTareas(ISender mediator)
+        public ControladorListaDeTareas(ISender mediator, ILogger<ControladorListaDeTareas> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> ListarTodos()
         {
+            _logger.LogInformation("Consultando todas las listas de tareas en el entorno AWS.");
+
             var resultadosDeListarTodos = await _mediator.Send(new ListarTodasLasListasDeTareasQuery());
 
             return resultadosDeListarTodos.Match(
                 resp => Ok(resp),
-                errores => Problem(errores)
+                errores => {
+                    _logger.LogError("Error al listar tareas: {Errores}", errores); // Log de error
+                    return Problem(errores);
+                }
             );
         }
 
@@ -38,22 +46,38 @@ namespace GestionDeTareas.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Crear([FromBody] CrearListaDeTareasCommand comando)
         {
+            _logger.LogInformation("Iniciando creación de lista de tareas: {NombreLista}", comando.Titulo); // Asumiendo que tiene propiedad Nombre
+
             var resultadoDeCrear = await _mediator.Send(comando);
 
             return resultadoDeCrear.Match(
-                resp => Ok(resp),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Lista de tareas creada exitosamente con ID: {ListaId}", resp);
+                    return Ok(resp);
+                },
+                errores => {
+                    _logger.LogWarning("Fallo al crear lista de tareas. Errores: {@Errores}", errores);
+                    return Problem(errores);
+                }
             );
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(Guid id)
         {
+            _logger.LogInformation("Solicitud para eliminar lista de tareas: {ListaId}", id); 
+
             var resultadoDeEliminar = await _mediator.Send(new EliminarListaDeTareasCommand(id));
 
             return resultadoDeEliminar.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Lista {ListaId} eliminada correctamente", id);
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Error al intentar eliminar la lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -62,6 +86,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.Id != id)
             {
+                _logger.LogWarning("Inconsistencia en IDs para actualización. Query: {QueryId}, Body: {BodyId}", id, comando.Id);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.ActualizacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -73,8 +98,14 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActualizarListaTarea = await _mediator.Send(comando);
 
             return resultadoDeActualizarListaTarea.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Lista de tareas {ListaId} actualizada exitosamente", id);
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Fallo en actualización de lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -83,6 +114,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.IdListaDeTareas != id)
             {
+                _logger.LogWarning("ID de lista no coincide en filtrado. Path: {PathId}, Query: {QueryId}", id, comando.IdListaDeTareas);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.AgregacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -91,11 +123,15 @@ namespace GestionDeTareas.API.Controllers
                 return Problem(errores);
             }
 
+            _logger.LogInformation("Filtrando tareas de la lista {ListaId} por estado", id);
             var resultadoDeFiltrarPorEstado = await _mediator.Send(comando);
 
             return resultadoDeFiltrarPorEstado.Match(
                 resp => Ok(resp),
-                errores => Problem(errores)
+                errores => {
+                    _logger.LogError("Error al filtrar tareas de la lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -104,6 +140,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.IdListaDeTareas != id)
             {
+                _logger.LogWarning("ID de lista no coincide al agregar tarea. Path: {PathId}, Command: {CmdId}", id, comando.IdListaDeTareas);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.AgregacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -115,8 +152,14 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeAgregarTarea = await _mediator.Send(comando);
 
             return resultadoDeAgregarTarea.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Nueva tarea agregada a la lista {ListaId}", id);
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Error al agregar tarea en lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -125,6 +168,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.IdListaDeTareas != id)
             {
+                _logger.LogWarning("ID de lista no coincide al eliminar tarea. Path: {PathId}", id);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.EliminacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -136,8 +180,14 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeEliminarTarea = await _mediator.Send(comando);
 
             return resultadoDeEliminarTarea.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Tarea {TareaId} eliminada de la lista {ListaId}", comando.IdTarea, id);
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Error al eliminar tarea de lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -146,6 +196,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.IdListaDeTareas != id)
             {
+                _logger.LogWarning("ID de lista no coincide al actualizar tarea. Path: {PathId}", id);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.ActualizacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -157,8 +208,14 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActulizarTarea = await _mediator.Send(comando);
 
             return resultadoDeActulizarTarea.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Tarea {TareaId} en lista actualizada", id.ToString());
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Error actualizando tarea en lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
 
@@ -167,6 +224,7 @@ namespace GestionDeTareas.API.Controllers
         {
             if (comando.IdListaDeTareas != id)
             {
+                _logger.LogWarning("ID de lista no coincide al cambiar estado de tarea. Path: {PathId}", id);
                 List<Error> errores = new()
                 {
                     Error.Validation("ListaDeTarea.ActualizacionInvalida","El Id de la consulta no es igual al que esta en la solicitud.")
@@ -178,8 +236,14 @@ namespace GestionDeTareas.API.Controllers
             var resultadoDeActulizarEstadoDeTarea = await _mediator.Send(comando);
 
             return resultadoDeActulizarEstadoDeTarea.Match(
-                resp => NoContent(),
-                errores => Problem(errores)
+                resp => {
+                    _logger.LogInformation("Estado cambiado para tarea {TareaId} en lista {ListaId}", comando.IdTarea, id);
+                    return NoContent();
+                },
+                errores => {
+                    _logger.LogError("Error cambiando estado de tarea en lista {ListaId}: {@Errores}", id, errores);
+                    return Problem(errores);
+                }
             );
         }
     }

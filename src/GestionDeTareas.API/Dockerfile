@@ -1,8 +1,8 @@
 # Etapa base: Runtime para producción y desarrollo
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+# EXPOSE 8080
 EXPOSE 8080
-EXPOSE 8081
 
 # Etapa de construcción
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -32,4 +32,5 @@ RUN dotnet publish "GestionDeTareas.API.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "GestionDeTareas.API.dll"]
