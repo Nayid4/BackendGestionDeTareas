@@ -1,7 +1,7 @@
 services:
   api:
     # Ahora usamos la imagen desde Docker Hub
-    image: nayid04/gestion-tareas-backend:latest
+    image: 330440573974.dkr.ecr.us-east-1.amazonaws.com/mini-proyecto-backend:latest
     container_name: gestion_tareas_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
