@@ -3,6 +3,10 @@ using GestionDeTareas.API.Extensiones;
 using GestionDeTareas.API.Middlewares;
 using GestionDeTareas.API.Servicios;
 using Infrastructure.Servicios;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -40,5 +44,28 @@ app.UseCors("web");
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
+
+// Endpoint para el Load Balancer de AWS
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+
+        var response = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(x => new
+            {
+                component = x.Key,
+                status = x.Value.Status.ToString(),
+                description = x.Value.Description
+            }),
+            duration = report.TotalDuration
+        };
+
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    }
+});
 
 app.Run();
